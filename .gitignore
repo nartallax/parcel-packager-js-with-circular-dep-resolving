@@ -1,0 +1,7 @@
+test_tmp
+target
+js
+packager.js
+packager.js.map
+.parcel-cache
+node_modules
