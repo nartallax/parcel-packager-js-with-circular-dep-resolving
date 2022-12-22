@@ -31,7 +31,7 @@ find_entrypoint_within_test(){
 
 find_output_bundle_within_test(){
 	if [ -d "./dist" ]; then
-		ls dist/*.js
+		ls dist/index.*.js
 		return 0
 	fi
 
@@ -51,9 +51,11 @@ run_single_test(){
 	./node_modules/.bin/parcel build $ENTRYPOINT 
 	node $(find_output_bundle_within_test)
 
-	ENTRYPOINT=$(find_entrypoint_within_test "_reversed")
-	./node_modules/.bin/parcel build $ENTRYPOINT
-	node $(find_output_bundle_within_test)
+	SECOND_ENTRYPOINT=$(find_entrypoint_within_test "_reversed")
+	if [ -f "$SECOND_ENTRYPOINT" ]; then
+		./node_modules/.bin/parcel build $ENTRYPOINT
+		node $(find_output_bundle_within_test)
+	fi
 }
 
 scripts/build.sh
@@ -74,6 +76,8 @@ else
 	echo "Running test $1"
 	run_single_test "$1"
 fi
+
+echo "Testing is completed successfully"
 
 cd ..
 rm -rf test_tmp

@@ -89,10 +89,16 @@ export class Graph<ID> {
 	removeNode(id: ID, node = this.getNode(id)): void {
 		this.nodeById.delete(id)
 		node.out.forEach(outId => {
-			this.getNode(outId).in.delete(id)
+			const node = this.nodeById.get(outId)
+			if(node){
+				node.in.delete(id)
+			}
 		})
 		node.in.forEach(inId => {
-			this.getNode(inId).out.delete(id)
+			const node = this.nodeById.get(inId)
+			if(node){
+				node.out.delete(id)
+			}
 		})
 	}
 
@@ -118,14 +124,14 @@ export class Graph<ID> {
 	removeNodeAndRecursivelyRemoveNonCyclicNodes(id: ID, node = this.getNode(id)): void {
 		this.removeNode(id, node)
 		node.out.forEach(outId => {
-			const inNode = this.getNode(outId)
-			if(isThisNodeTerminal(inNode)){
+			const inNode = this.nodeById.get(outId)
+			if(inNode && isThisNodeTerminal(inNode)){
 				this.removeNodeAndRecursivelyRemoveNonCyclicNodes(outId, inNode)
 			}
 		})
 		node.in.forEach(inId => {
-			const outNode = this.getNode(inId)
-			if(isThisNodeTerminal(outNode)){
+			const outNode = this.nodeById.get(inId)
+			if(outNode && isThisNodeTerminal(outNode)){
 				this.removeNodeAndRecursivelyRemoveNonCyclicNodes(inId, outNode)
 			}
 		})
@@ -155,8 +161,8 @@ export class Graph<ID> {
 	toStringWithResolver(resolver: (id: ID) => string): string {
 		const result: string[] = []
 		for(const [id, node] of this.nodeById){
-			const list = [...node.out].map(id => resolver(id)).join(", ")
-			result.push(resolver(id) + " -> " + list)
+			result.push(resolver(id) + " -> " + [...node.out].map(id => resolver(id)).join(", "))
+			result.push(resolver(id) + " <- " + [...node.in].map(id => resolver(id)).join(", "))
 		}
 		return result.join("\n")
 	}
