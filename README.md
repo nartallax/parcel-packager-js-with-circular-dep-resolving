@@ -42,11 +42,19 @@ So now we can see that default cyclic dependency resolution rule is "let's hope 
 
 ### But what can we do?
 
+We can go through one of two approaches to the problem.
+
+#### Devmove: proxy approach
+
+In devmode, modules are defined as functions, almost like the old good AMD. So the solution to the circular dependency problem is lazy loading - module is not loaded until its value is actually used. This is done by wrapping module definition in `Proxy`, and only calling to the actual definition when any of the `Proxy`'s handlers are called.  
+This approach has a bunch of problems: it's a performance hit, and also it resolves every circular dependency; which is bad, because production approach works not so reliably; so, something that works fine in devmode can fail in production.  
+
+#### Production: reordering approach
+
 The first step is to build dependency graph and drop everything that is not a part of the cycle.  
 Then we go over each dependency and check if it's cold. If it is - we cut it and drop everything that is not in cycle anymore; then we repeat the process until there's no cycles.  
 
 The interesting (and unreliable) part of how we determine if dependency is cold or hot - we analyse its code (going through its AST), trying to find which imported values it uses at definition time. You can imagine that there's a lot of cases that are not caught by this approach - but there's also a lot of simple cases that are caught, and that's usually sufficient. Even if it's not - you can always explicitly tell the packager that value is used by putting something like `void myImportedValue` in the module root.  
-There's different approach of detecting hot dependencies - just wrap each module in `Proxy` object and evaluate it lazily. It will work 100% of the time, but it will be a performance hit, and also will prevent a lot of optimizations, so I'd rather not do that.  
 
 When the graph is all de-cycled, we can easily build a sequence in which packages should be present in the bundle.
 
