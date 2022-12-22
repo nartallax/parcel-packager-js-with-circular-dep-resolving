@@ -58,7 +58,7 @@ The interesting (and unreliable) part of how we determine if dependency is cold 
 
 When the graph is all de-cycled, we can easily build a sequence in which packages should be present in the bundle.
 
-### And how do we enforce that order?
+#### And how do we enforce that order?
 
 This is also a fun part, like the one above!  
 We apply some hacks, introducing new imports to original code in proper order and limiting traversal of dependencies, so modules are substitute in required order.  
@@ -69,7 +69,6 @@ And that's it.
 ## Why this logic is not a part of most existing bundlers?
 
 Looks like it's ECMAScript standard behaviour for this kind of things (which sucks).  
-Seems like everyone have this problem, like, once or twice a year, solving it just by juggling the code a little, and don't care the rest of the time.  
 If you're maintaining some bundler and want to adopt this logic - please do so. I'll be delighted to know that at least one bundler is better now.  
 
 ## Updating the fork to newer version of original
