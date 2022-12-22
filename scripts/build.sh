@@ -17,5 +17,7 @@ rm target/packager.js.map
 cp package.json target/
 cp LICENSE target/
 cp README.md target/
+cp lib/dev-prelude.js target
+cp patch/dev-prelude-patch.js target
 
 node scripts/patch_packagejson_after_build.mjs
