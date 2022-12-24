@@ -10,7 +10,6 @@ rm -rf .parcel-cache 2> /dev/null
 rm -rf bundler.js 2> /dev/null
 rm -rf bundler.js.map 2> /dev/null
 
-#./node_modules/.bin/tsc --noEmit
 ./node_modules/.bin/parcel build
 
 rm target/packager.js.map
