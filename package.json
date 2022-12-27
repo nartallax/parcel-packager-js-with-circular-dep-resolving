@@ -1,6 +1,6 @@
 {
   "name": "@nartallax/parcel-packager-js-with-circular-dep-resolving",
-  "version": "2.8.2-alpha.7",
+  "version": "2.8.2-alpha.8",
   "license": "MIT",
   "funding": {
     "type": "opencollective",

@@ -69,4 +69,10 @@
 		return origThen.apply(proxyProduct ?? this, args)
 	}
 
+	const origValueOf = String.prototype.valueOf
+	String.prototype.valueOf = function(...args) {
+		const proxyProduct = !this[proxyCheckSymbol] ? null : this[proxyProductSymbol]
+		return origValueOf.apply(proxyProduct ?? this, args)
+	}
+
 })()
